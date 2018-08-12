@@ -2,22 +2,25 @@
 require_once('../includes/config.php');
 
 //Si no está logeado redirige a login
-if(!$user->is_logged_in()){ header('Location: login.php'); }
+if(!$miembro->is_logged_in()){ header('Location: login.php'); }
 ?>
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
   <title>Admin - Agregar usuario</title>
-  <link rel="stylesheet" href="../style/normalize.css">
-  <link rel="stylesheet" href="../style/main.css">
+   <!-- <link rel="stylesheet" href="style/estilo1.css">
+   <link rel="stylesheet" href="style/estilo2.css"> -->
+   <link rel="stylesheet" href="../style/css/bootstrap.css">
 </head>
 <body>
 
-<div id="wrapper">
-
+<div class="container">
+	<h1>Proyecto DAW 2018</h1>
+	<hr />
 	<?php include('menu.php');?>
-	<p><a href="users.php">User Admin Index</a></p>
+	
+	<p><a href="miembros.php">Volver</a></p>
 
 	<h2>Añadir usuario</h2>
 
@@ -30,7 +33,7 @@ if(!$user->is_logged_in()){ header('Location: login.php'); }
 		extract($_POST);
 
 		//Validación básica
-		if($username ==''){
+		if($nombreusuario ==''){
 			$error[] = 'Introduce un nombre de usuario.';
 		}
 
@@ -52,20 +55,20 @@ if(!$user->is_logged_in()){ header('Location: login.php'); }
 
 		if(!isset($error)){
 
-			$hashedpassword = $user->password_hash($password, PASSWORD_BCRYPT);
+			$hashedpassword = $miembro->password_hash($password, PASSWORD_BCRYPT);
 
 			try {
 
 				//Hacer insert en BD
-				$stmt = $db->prepare('INSERT INTO blog_members (username,password,email) VALUES (:username, :password, :email)') ;
+				$stmt = $db->prepare('INSERT INTO miembros (nombreusuario,password,email) VALUES (:nombreusuario, :password, :email)') ;
 				$stmt->execute(array(
-					':username' => $username,
+					':nombreusuario' => $nombreusuario,
 					':password' => $hashedpassword,
 					':email' => $email
 				));
 
 				//Redirigir a la página principal.
-				header('Location: users.php?action=added');
+				header('Location: miembros.php?action=agregado');
 				exit;
 
 			} catch(PDOException $e) {
@@ -87,7 +90,7 @@ if(!$user->is_logged_in()){ header('Location: login.php'); }
 	<form action='' method='post'>
 
 		<p><label>Nombre:</label><br />
-		<input type='text' name='username' value='<?php if(isset($error)){ echo $_POST['username'];}?>'></p>
+		<input type='text' name='nombreusuario' value='<?php if(isset($error)){ echo $_POST['nombreusuario'];}?>'></p>
 
 		<p><label>Contraseña:</label><br />
 		<input type='password' name='password' value='<?php if(isset($error)){ echo $_POST['password'];}?>'></p>

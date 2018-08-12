@@ -3,7 +3,7 @@
 require_once('../includes/config.php');
 
 //Hacer Logout
-$user->logout();
-header('Location: index.php'); 
+$miembro->logout();
+header('Location: ..\index.php'); 
 
 ?>

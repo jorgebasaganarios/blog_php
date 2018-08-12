@@ -2,15 +2,16 @@
 require_once('../includes/config.php');
 
 //Si no está logeado redirige a login
-if(!$user->is_logged_in()){ header('Location: login.php'); }
+if(!$miembro->is_logged_in()){ header('Location: login.php'); }
 ?>
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
   <title>Admin - Modificar publicación</title>
-  <link rel="stylesheet" href="../style/normalize.css">
-  <link rel="stylesheet" href="../style/main.css">
+   <!-- <link rel="stylesheet" href="style/estilo1.css">
+   <link rel="stylesheet" href="style/estilo2.css"> -->
+   <link rel="stylesheet" href="../style/css/bootstrap.css">
   <script src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
   <script>
           tinymce.init({
@@ -26,10 +27,12 @@ if(!$user->is_logged_in()){ header('Location: login.php'); }
 </head>
 <body>
 
-<div id="wrapper">
-
+<div class="container">
+	<h1>Proyecto DAW 2018</h1>
+	<hr />
 	<?php include('menu.php');?>
-	<p><a href="./">Blog Admin Index</a></p>
+	
+	<p><a href="index.php">Volver</a></p>
 
 	<h2>Modificar publicación</h2>
 
@@ -45,19 +48,19 @@ if(!$user->is_logged_in()){ header('Location: login.php'); }
 		extract($_POST);
 
 		//Validación básica
-		if($postID ==''){
+		if($idpubli ==''){
 			$error[] = 'Esta publicación no tiene una ID válida!.';
 		}
 
-		if($postTitle ==''){
+		if($titulopubli ==''){
 			$error[] = 'Introduce el título.';
 		}
 
-		if($postDesc ==''){
+		if($resumen ==''){
 			$error[] = 'Introduce una descripción.';
 		}
 
-		if($postCont ==''){
+		if($contenido ==''){
 			$error[] = 'Introduce el contenido de la publicación.';
 		}
 
@@ -66,12 +69,12 @@ if(!$user->is_logged_in()){ header('Location: login.php'); }
 			try {
 
 				//Hacer insert en BD
-				$stmt = $db->prepare('UPDATE blog_posts SET postTitle = :postTitle, postDesc = :postDesc, postCont = :postCont WHERE postID = :postID') ;
+				$stmt = $db->prepare('UPDATE publicaciones SET titulopubli = :titulopubli, resumen = :resumen, contenido = :contenido WHERE idpubli = :idpubli') ;
 				$stmt->execute(array(
-					':postTitle' => $postTitle,
-					':postDesc' => $postDesc,
-					':postCont' => $postCont,
-					':postID' => $postID
+					':titulopubli' => $titulopubli,
+					':resumen' => $resumen,
+					':contenido' => $contenido,
+					':idpubli' => $idpubli
 				));
 
 				//Redirigir a la página principal.
@@ -99,8 +102,8 @@ if(!$user->is_logged_in()){ header('Location: login.php'); }
 
 		try {
 
-			$stmt = $db->prepare('SELECT postID, postTitle, postDesc, postCont FROM blog_posts WHERE postID = :postID') ;
-			$stmt->execute(array(':postID' => $_GET['id']));
+			$stmt = $db->prepare('SELECT idpubli, titulopubli, resumen, contenido FROM publicaciones WHERE idpubli = :idpubli') ;
+			$stmt->execute(array(':idpubli' => $_GET['id']));
 			$row = $stmt->fetch(); 
 
 		} catch(PDOException $e) {
@@ -110,16 +113,16 @@ if(!$user->is_logged_in()){ header('Location: login.php'); }
 	?>
 
 	<form action='' method='post'>
-		<input type='hidden' name='postID' value='<?php echo $row['postID'];?>'>
+		<input type='hidden' name='idpubli' value='<?php echo $row['idpubli'];?>'>
 
 		<p><label>Title</label><br />
-		<input type='text' name='postTitle' value='<?php echo $row['postTitle'];?>'></p>
+		<input type='text' name='titulopubli' value='<?php echo $row['titulopubli'];?>'></p>
 
 		<p><label>Description</label><br />
-		<textarea name='postDesc' cols='60' rows='10'><?php echo $row['postDesc'];?></textarea></p>
+		<textarea name='resumen' cols='60' rows='10'><?php echo $row['resumen'];?></textarea></p>
 
 		<p><label>Content</label><br />
-		<textarea name='postCont' cols='60' rows='10'><?php echo $row['postCont'];?></textarea></p>
+		<textarea name='contenido' cols='60' rows='10'><?php echo $row['contenido'];?></textarea></p>
 
 		<p><input type='submit' name='submit' value='Actualizar'></p>
 

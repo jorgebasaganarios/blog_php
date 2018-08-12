@@ -2,15 +2,16 @@
 require_once('../includes/config.php');
 
 //Si no está logeado redirige a login
-if(!$user->is_logged_in()){ header('Location: login.php'); }
+if(!$miembro->is_logged_in()){ header('Location: login.php'); }
 ?>
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
   <title>Admin - Agregar publicación</title>
-  <link rel="stylesheet" href="../style/normalize.css">
-  <link rel="stylesheet" href="../style/main.css">
+   <!-- <link rel="stylesheet" href="style/estilo1.css">
+   <link rel="stylesheet" href="style/estilo2.css"> -->
+   <link rel="stylesheet" href="../style/css/bootstrap.css">
   <script src="//tinymce.cachefly.net/4.2/tinymce.min.js"></script>
   <!-- DE PRUEBA <script src='https://cloud.tinymce.com/stable/tinymce.min.js'></script>-->
   <script>
@@ -32,10 +33,12 @@ if(!$user->is_logged_in()){ header('Location: login.php'); }
 </head>
 <body>
 
-<div id="wrapper">
-
+<div class="container">
+	<h1>Proyecto DAW 2018</h1>
+	<hr />
 	<?php include('menu.php');?>
-	<p><a href="./">Blog Admin Index</a></p>
+	
+	<p><a href="index.php">Volver</a></p>
 
 	<h2>Agregar publicación</h2>
 
@@ -50,15 +53,15 @@ if(!$user->is_logged_in()){ header('Location: login.php'); }
 		extract($_POST);
 
 		//Validación básica
-		if($postTitle ==''){
-			$error[] = 'Introduce un título.';
+		if($titulopubli ==''){
+			$error[] = 'Introduce un nombre de página.';
 		}
 
-		if($postDesc ==''){
+		if($resumen ==''){
 			$error[] = 'Introduce una descripción.';
 		}
 
-		if($postCont ==''){
+		if($contenido ==''){
 			$error[] = 'Introduce el contenido.';
 		}
 
@@ -67,12 +70,12 @@ if(!$user->is_logged_in()){ header('Location: login.php'); }
 			try {
 
 				//Hacer insert en BD
-				$stmt = $db->prepare('INSERT INTO blog_posts (postTitle,postDesc,postCont,postDate) VALUES (:postTitle, :postDesc, :postCont, :postDate)') ;
+				$stmt = $db->prepare('INSERT INTO publicaciones (titulopubli,resumen,contenido,fechapubli) VALUES (:titulopubli, :resumen, :contenido, :fechapubli)') ;
 				$stmt->execute(array(
-					':postTitle' => $postTitle,
-					':postDesc' => $postDesc,
-					':postCont' => $postCont,
-					':postDate' => date('Y-m-d H:i:s')
+					':titulopubli' => $titulopubli,
+					':resumen' => $resumen,
+					':contenido' => $contenido,
+					':fechapubli' => date('Y-m-d H:i:s')
 				));
 
 				//Redirigir a la página principal.
@@ -98,13 +101,13 @@ if(!$user->is_logged_in()){ header('Location: login.php'); }
 	<form action='' method='post'>
 
 		<p><label>Title</label><br />
-		<input type='text' name='postTitle' value='<?php if(isset($error)){ echo $_POST['postTitle'];}?>'></p>
+		<input type='text' name='titulopubli' value='<?php if(isset($error)){ echo $_POST['titulopubli'];}?>'></p>
 
 		<p><label>Description</label><br />
-		<textarea name='postDesc' cols='60' rows='10'><?php if(isset($error)){ echo $_POST['postDesc'];}?></textarea></p>
+		<textarea name='resumen' cols='60' rows='10'><?php if(isset($error)){ echo $_POST['resumen'];}?></textarea></p>
 
 		<p><label>Content</label><br />
-		<textarea name='postCont' cols='60' rows='10'><?php if(isset($error)){ echo $_POST['postCont'];}?></textarea></p>
+		<textarea name='contenido' cols='60' rows='10'><?php if(isset($error)){ echo $_POST['contenido'];}?></textarea></p>
 
 		<p><input type='submit' name='submit' value='Aceptar'></p>
 
